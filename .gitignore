@@ -23,4 +23,4 @@ truststore.*
 
 # OS
 .DS_Store
-Thumbs.db
+Thumbs.dbsrc/SetupAESKey.java
