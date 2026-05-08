@@ -1,0 +1,26 @@
+# Java
+*.class
+bin/
+target/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+
+# Security (TRÈS IMPORTANT)
+*.p12
+*.jks
+*.keystore
+truststore.*
+*.cer
+
+# OS
+.DS_Store
+Thumbs.db

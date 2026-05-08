@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <!-- Console (pour le débogage en développement) -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        
+        <!-- Fichier sécurisé avec rotation -->
+        <RollingFile name="SecureFile" fileName="logs/chrionline.log"
+                     filePattern="logs/chrionline-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+    
+    <Loggers>
+        <!-- Niveau INFO pour la production (changer en DEBUG pour plus de détails) -->
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="SecureFile"/>
+        </Root>
+        
+        <!-- Logger spécifique pour les événements de sécurité -->
+        <Logger name="security" level="DEBUG" additivity="false">
+            <AppenderRef ref="SecureFile"/>
+        </Logger>
+    </Loggers>
+</Configuration>
