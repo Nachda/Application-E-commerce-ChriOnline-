@@ -50,35 +50,35 @@ via un mécanisme de signature RSA de type défi-réponse (similaire à SSH).
 | 🔑 Stockage sécurisé | Clés RSA protégées dans un keystore PKCS12 (KeystoreManager) |
 
 ## 🏗️ Architecture technique
-
-\\\
 src/
-├── client/        # Points d'entrée client et admin (ClientMain, AdminMain)
-├── config/        # Configuration serveur/application
-├── dao/           # Accès aux données (DAO - Data Access Object)
-├── database/       # Connexion et gestion MySQL
-├── model/         # Entités métier (Order, Product, SavedCard, ...)
-├── security/       # Cryptographie et sécurité réseau (RSA, challenge-response, anti-DoS)
-├── server/        # Logique serveur, gestion des clients (ClientHandler)
-├── service/        # Logique métier (StockService, ProductService, CardService, ...)
+├── client/ # Points d'entrée client et admin (ClientMain, AdminMain)
+├── config/ # Configuration serveur/application
+├── dao/ # Accès aux données (DAO - Data Access Object)
+├── database/ # Connexion et gestion MySQL
+├── model/ # Entités métier (Order, Product, SavedCard, ...)
+├── security/ # Cryptographie et sécurité réseau (RSA, challenge-response, anti-DoS)
+├── server/ # Logique serveur, gestion des clients (ClientHandler)
+├── service/ # Logique métier (StockService, ProductService, CardService, ...)
 ├── ui/
-│   ├── admin/      # Interface d'administration (Swing)
-│   ├── client/     # Interface client (boutique, paiement)
-│   ├── common/      # Composants partagés
-│   ├── components/  # Composants UI réutilisables (tables, badges, dialogs)
-│   └── theme/      # Thème graphique de l'application
-└── utils/         # Utilitaires (validation mots de passe, etc.)
-\\\
+│ ├── admin/ # Interface d'administration (Swing)
+│ ├── client/ # Interface client (boutique, paiement)
+│ ├── common/ # Composants partagés
+│ ├── components/ # Composants UI réutilisables (tables, badges, dialogs)
+│ └── theme/ # Thème graphique de l'application
+└── utils/ # Utilitaires (validation mots de passe, etc.)
+
+text
+
 
 ## 🛠️ Stack technique
 
 - **Langage** : Java (JDK 17+)
-- **Réseau** : Sockets TCP (\Socket\/\ServerSocket\) + UDP (\DatagramSocket\), multi-threadé
-- **Base de données** : MySQL (via \mysql-connector-j\)
-- **Cryptographie** : Java Cryptography Architecture (JCA) – AES, RSA 2048, SHA256withRSA
+- **Réseau** : Sockets TCP (Socket/ServerSocket) + UDP (DatagramSocket), multi-threadé
+- **Base de données** : MySQL (via mysql-connector-j)
+- **Cryptographie** : Java Cryptography Architecture (JCA) - AES, RSA 2048, SHA256withRSA
 - **Stockage sécurisé** : Keystore PKCS12 pour les clés privées (admin/serveur)
 - **Logging** : Log4j2
-- **Notifications** : JavaMail API (\javax.mail\)
+- **Notifications** : JavaMail API (javax.mail)
 - **Interface graphique** : Java Swing
 - **Versionning** : Git + GitHub
 
@@ -100,55 +100,46 @@ src/
 - Git (optionnel, pour cloner)
 
 ### 1. Cloner le repository
-\\\ash
+```bash
 git clone https://github.com/Nachda/Application-E-commerce-ChriOnline-.git
 cd Application-E-commerce-ChriOnline-
-\\\
+2. Compiler les sources
+Bash
 
-### 2. Compiler les sources
-\\\ash
 javac -cp "lib/*" -d bin src/*.java src/**/*.java
-\\\
+3. Lancer le serveur
+Bash
 
-### 3. Lancer le serveur
-\\\ash
 java -cp "bin;lib/*" server.Server
-\\\
+4. Lancer un client (dans un autre terminal)
+Bash
 
-### 4. Lancer un client (dans un autre terminal)
-\\\ash
 java -cp "bin;lib/*" client.ClientMain
-\\\
+5. Lancer l'interface admin (dans un autre terminal)
+Bash
 
-### 5. Lancer l'interface admin (dans un autre terminal)
-\\\ash
 java -cp "bin;lib/*" client.AdminMain
-\\\
+💡 Note : La première exécution nécessite la génération des clés RSA
+(serveur/admin) et la configuration de la base MySQL (voir resources/
+pour les fichiers de configuration).
 
-> 💡 **Note** : La première exécution nécessite la génération des clés RSA
-> (serveur/admin) et la configuration de la base MySQL (voir \esources/\
-> pour les fichiers de configuration).
+📂 Structure du projet
+text
 
-## 📂 Structure du projet
-
-\\\
 ChriOnline/
-├── src/           # Code source Java complet (voir architecture ci-dessus)
+├── src/            # Code source Java complet (voir architecture ci-dessus)
 ├── resources/      # Fichiers de configuration
-├── lib/           # Dépendances externes (Log4j2, JavaMail, MySQL Connector)
-├── bin/           # Classes compilées (ignoré par Git)
-├── logs/          # Traces d'exécution (ignoré par Git)
-├── image/         # Assets pour l'interface graphique
-├── .gitignore     # Fichiers exclus du versionnement
-├── LICENSE        # Licence académique
-└── README.md      # Ce fichier
-\\\
-
-## 👥 Équipe & Membres du projet
-
+├── lib/            # Dépendances externes (Log4j2, JavaMail, MySQL Connector)
+├── bin/            # Classes compilées (ignoré par Git)
+├── logs/           # Traces d'exécution (ignoré par Git)
+├── image/          # Assets pour l'interface graphique
+├── .gitignore      # Fichiers exclus du versionnement
+├── LICENSE         # Licence académique
+└── README.md       # Ce fichier
+👥 Équipe & Membres du projet
 Projet réalisé par les étudiants de la filière GSTR2 (ENSA Tétouan),
 année académique 2025-2026 :
 
-- **Nachda Nourouddine**
-- **YAMEOGO Ariel Barthelemy Wendtoin**
-- **Omar Hassan Abdoul-Fatah**
+Nachda Nourouddine
+YAMEOGO Ariel Barthelemy Wendtoin
+Omar Hassan Abdoul-Fatah
