@@ -1,4 +1,4 @@
-# Java
+﻿# Java
 *.class
 bin/
 target/
@@ -14,7 +14,7 @@ logs/
 .classpath
 .project
 
-# Security (TRÈS IMPORTANT)
+# Security (TRES IMPORTANT)
 *.p12
 *.jks
 *.keystore
@@ -23,4 +23,7 @@ truststore.*
 
 # OS
 .DS_Store
-Thumbs.dbsrc/SetupAESKey.java
+Thumbs.db
+
+# Outil admin (hors suivi)
+src/SetupAESKey.java
