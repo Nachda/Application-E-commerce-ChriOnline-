@@ -33,6 +33,11 @@ public class ProductService {
         return productDAO.update(product);
     }
 
+    // AJOUTÉ
+    public boolean updateProductStock(int productId, int newStock) {
+        return productDAO.updateStock(productId, newStock);
+    }
+
     public boolean deleteProduct(int id) {
         return productDAO.delete(id);
     }

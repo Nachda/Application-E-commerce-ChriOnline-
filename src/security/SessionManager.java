@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class SessionManager {
 
-    private static final long SESSION_TIMEOUT_MS = TimeUnit.MINUTES.toMillis(30);
+	private static final long SESSION_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(20);
     private final ConcurrentHashMap<Integer, SessionInfo> sessions = new ConcurrentHashMap<>();
 
     private static class SessionInfo {

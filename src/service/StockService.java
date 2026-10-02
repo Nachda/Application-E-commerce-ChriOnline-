@@ -1,8 +1,8 @@
 package service;
 
 import dao.ProductDAO;
-import model.Product;
 import dao.StockMovementDAO;
+import model.Product;
 import model.StockAlert;
 import model.StockMovement;
 
@@ -27,22 +27,34 @@ public class StockService {
      */
     public boolean adjustStock(int productId, int quantity, String movementType,
                                String reason, Integer adminUserId) {
-        var productOpt = productDAO.findById(productId);
-        if (productOpt == null) return false;
+        Product product = productDAO.findById(productId);
+        if (product == null) return false;
 
-        int previousStock = productOpt.getStock();
+        int previousStock = product.getStock();
         int newStock;
-        switch (movementType) {
-            case "add"    -> newStock = previousStock + quantity;
-            case "remove" -> newStock = Math.max(0, previousStock - quantity);
-            case "adjust" -> newStock = quantity; // quantité = nouveau stock absolu
-            default -> throw new IllegalArgumentException("Type de mouvement invalide : " + movementType);
+
+        // Accepter les deux formats (français et anglais)
+        switch (movementType.toLowerCase()) {
+            case "add":
+            case "entree":
+                newStock = previousStock + quantity;
+                break;
+            case "remove":
+            case "sortie":
+                newStock = Math.max(0, previousStock - quantity);
+                break;
+            case "adjust":
+            case "ajustement":
+                newStock = quantity;
+                break;
+            default:
+                throw new IllegalArgumentException("Type de mouvement invalide : " + movementType);
         }
 
         boolean updated = productDAO.updateStock(productId, newStock);
         if (!updated) return false;
 
-        StockMovement movement = new StockMovement(0, productId, productOpt.getName(),
+        StockMovement movement = new StockMovement(0, productId, product.getName(),
                 movementType, quantity, previousStock, newStock,
                 reason, adminUserId, java.time.LocalDateTime.now());
         stockMovementDAO.save(movement);

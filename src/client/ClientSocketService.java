@@ -1,6 +1,7 @@
 package client;
 
 import security.SecureChannel;
+
 import javax.swing.*;
 import java.net.Socket;
 import java.util.Arrays;

@@ -15,6 +15,11 @@ public class OrderItemDAO {
         this.conn = DatabaseConnection.getConnection();
     }
 
+    // ⭐ Constructeur avec connexion partagée (pour transactions)
+    public OrderItemDAO(Connection conn) {
+        this.conn = conn;
+    }
+
     public void save(OrderItem item, int orderId) throws SQLException {
         String sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -45,5 +50,14 @@ public class OrderItemDAO {
             }
         }
         return items;
+    }
+
+    // ⭐ Ajouté 
+    public void delete(int orderItemId) throws SQLException {
+        String sql = "DELETE FROM order_items WHERE id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderItemId);
+            ps.executeUpdate();
+        }
     }
 }

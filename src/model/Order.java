@@ -11,12 +11,18 @@ import java.util.UUID;
  */
 public class Order {
     private int id;
+    private int clientId;
     private String orderUUID;
     private double totalPrice;
     private String status;          // pending, validated, shipped, delivered, cancelled
     private LocalDateTime createdAt;
     private List<OrderItem> items;
     private Payment payment;
+
+    // ⭐ NOUVEAU : Infos client pour l'affichage admin
+    private String clientNom;
+    private String clientPrenom;
+    private String clientEmail;
 
     public Order() {
         this.orderUUID = UUID.randomUUID().toString();
@@ -28,6 +34,9 @@ public class Order {
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
+
+    public int getClientId() { return clientId; }
+    public void setClientId(int clientId) { this.clientId = clientId; }
 
     public String getOrderUUID() { return orderUUID; }
     public void setOrderUUID(String orderUUID) { this.orderUUID = orderUUID; }
@@ -67,5 +76,22 @@ public class Order {
 
     public void validerCommande() {
         this.status = "validated";
+    }
+
+    // ⭐ NOUVEAU : Infos client pour l'interface admin
+    public String getClientNom() { return clientNom; }
+    public void setClientNom(String clientNom) { this.clientNom = clientNom; }
+
+    public String getClientPrenom() { return clientPrenom; }
+    public void setClientPrenom(String clientPrenom) { this.clientPrenom = clientPrenom; }
+
+    public String getClientEmail() { return clientEmail; }
+    public void setClientEmail(String clientEmail) { this.clientEmail = clientEmail; }
+
+    public String getClientFullName() {
+        String nom = (clientNom != null) ? clientNom : "";
+        String prenom = (clientPrenom != null) ? clientPrenom : "";
+        String full = (prenom + " " + nom).trim();
+        return full.isEmpty() ? "Client #" + clientId : full;
     }
 }

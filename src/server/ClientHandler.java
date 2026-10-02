@@ -518,7 +518,7 @@ public class ClientHandler extends Thread {
         for (User u : users) {
             sb.append(u.getId()).append(";").append(safe(u.getNom())).append(";")
               .append(safe(u.getPrenom())).append(";").append(safe(u.getEmail()))
-              .append(";").append(safe(u.getRole())).append("|");
+              .append(";").append(safe(u.getRole())).append(";").append(safe(u.getStatus())).append("|");
         }
         return sb.substring(0, sb.length() - 1);
     }
@@ -529,7 +529,18 @@ public class ClientHandler extends Thread {
             if (orders.isEmpty()) return "NO_ORDERS";
             StringBuilder sb = new StringBuilder();
             for (Order o : orders) {
+                // Récupérer le vrai nom du client (déchiffré)
+                String clientName = "";
+                String clientEmail = "";
+                User clientUser = userDAO.findById(o.getClientId());
+                if (clientUser != null) {
+                    clientName = (clientUser.getPrenom() != null ? clientUser.getPrenom() : "") + " " +
+                                 (clientUser.getNom() != null ? clientUser.getNom() : "");
+                    clientEmail = clientUser.getEmail();
+                }
                 sb.append(o.getId()).append(";").append(safe(o.getOrderUUID())).append(";")
+                  .append(safe(clientName.trim())).append(";")
+                  .append(safe(clientEmail)).append(";")
                   .append(o.getTotalPrice()).append(";").append(safe(o.getStatus()))
                   .append(";").append(o.getCreatedAt()).append("|");
             }
@@ -734,7 +745,7 @@ public class ClientHandler extends Thread {
                 challenge = activeChallenges.remove(email);
             }
             if (challenge == null) {
-            	secLogger.warn("⚠️ Aucun challenge trouvé pour {}", email);
+                secLogger.warn("⚠️ Aucun challenge trouvé pour {}", email);
                 return "ERROR:NO_CHALLENGE";
             }
 
@@ -742,26 +753,30 @@ public class ClientHandler extends Thread {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             X509Certificate cert = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certBytes));
 
-            //  Charger le certificat de confiance depuis le truststore
+            // Extraire l'alias de l'email (comme dans AdminLoginFrame)
+            String alias = email.contains("@") ? email.substring(0, email.indexOf("@")) : email;
+            alias = alias.replaceAll("[^a-zA-Z0-9.\\-_]", "_");
+
+            // Charger le certificat de confiance depuis le truststore avec le bon alias
             char[] truststorePassword = ServerConfig.getTruststorePassword();
             X509Certificate trustedCert = (X509Certificate) KeystoreManager.loadCertificate(
                     ServerConfig.getTruststorePath(),
                     truststorePassword.clone(),
-                    "admin"
+                    alias
             );
 
             if (trustedCert == null) {
-                secLogger.warn("⚠️ Certificat admin introuvable dans le truststore");
+                secLogger.warn("⚠️ Certificat admin introuvable dans le truststore pour l'alias {}", alias);
                 return "ERROR:CERT_NOT_TRUSTED";
             }
 
-            //  Comparer le certificat reçu avec le certificat de confiance
+            // Comparer le certificat reçu avec le certificat de confiance
             if (!cert.equals(trustedCert)) {
                 secLogger.warn("🚨 Certificat reçu différent du certificat de confiance pour {}", email);
                 return "ERROR:CERT_NOT_TRUSTED";
             }
 
-            //  Extraire la clé publique du certificat validé
+            // Extraire la clé publique du certificat validé
             PublicKey publicKey = KeystoreManager.loadPublicKeyFromCertificate(cert);
             if (publicKey == null) {
                 secLogger.warn("⚠️ Clé publique invalide pour {}", email);
@@ -771,18 +786,18 @@ public class ClientHandler extends Thread {
             byte[] signatureBytes = Base64.getDecoder().decode(signatureBase64);
             boolean valid = Verifier.verify(challenge, signatureBytes, publicKey);
             if (!valid) {
-            	secLogger.warn("🚨 Signature invalide pour {}", email);
-            	return "ERROR:INVALID_SIGNATURE";
+                secLogger.warn("🚨 Signature invalide pour {}", email);
+                return "ERROR:INVALID_SIGNATURE";
             }
 
             User adminUser = userDAO.findByEmail(email);
-            
+
             // ⭐ Création d'une session admin
             String token = sessionManager.createSession(adminUser.getId(), clientIP);
             logger.info("AUTHENTIFICATION ADMIN RÉUSSIE pour {}", email);
             return "ADMIN_LOGIN_SUCCESS:" + adminUser.getId() + ":" + adminUser.getRole() + ":" + token;
         } catch (Exception e) {
-        	logger.error("Erreur ADMIN_LOGIN_VERIFY :", e);
+            logger.error("Erreur ADMIN_LOGIN_VERIFY :", e);
             return "ERROR:ADMIN_LOGIN_VERIFY_EXCEPTION";
         }
     }

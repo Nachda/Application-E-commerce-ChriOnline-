@@ -1,50 +1,54 @@
 package ui.components;
 
-import utils.UITheme;
+import ui.theme.UITheme;
 
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Carte de métrique simple (utilisée dans le tableau de bord).
- */
 public class MetricCard extends JPanel {
 
-    private JLabel titleLabel, valueLabel, subtitleLabel;
+    private final JLabel titleLabel;
+    private final JLabel valueLabel;
+    private final JLabel subtitleLabel;
 
     public MetricCard(String title, String value, String subtitle) {
-        setBackground(UITheme.CARD);
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(16, 20, 16, 20));
+        setLayout(new BorderLayout(8, 8));
+        setBackground(UITheme.CARD_BG);
+        setBorder(UITheme.cardBorder());
 
         titleLabel = new JLabel(title);
-        titleLabel.setForeground(UITheme.MUTED);
-        titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        titleLabel.setForeground(UITheme.TEXT_SECONDARY);
+        titleLabel.setFont(UITheme.FONT_BODY);
 
         valueLabel = new JLabel(value);
-        valueLabel.setForeground(UITheme.TEXT);
-        valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        valueLabel.setForeground(UITheme.TEXT_PRIMARY);
+        valueLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
 
         subtitleLabel = new JLabel(subtitle);
-        subtitleLabel.setForeground(UITheme.MUTED);
-        subtitleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        subtitleLabel.setForeground(UITheme.TEXT_MUTED);
+        subtitleLabel.setFont(UITheme.FONT_SMALL);
 
-        add(titleLabel);
-        add(Box.createVerticalStrut(4));
-        add(valueLabel);
-        add(Box.createVerticalStrut(4));
-        add(subtitleLabel);
+        add(titleLabel, BorderLayout.NORTH);
+
+        JPanel center = new JPanel();
+        center.setOpaque(false);
+        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+        center.add(valueLabel);
+        center.add(Box.createVerticalStrut(4));
+        center.add(subtitleLabel);
+
+        add(center, BorderLayout.CENTER);
     }
 
     public void setValue(String value) {
         valueLabel.setText(value);
     }
 
-    public void setTitle(String title) {
-        titleLabel.setText(title);
-    }
-
     public void setSubtitle(String subtitle) {
         subtitleLabel.setText(subtitle);
+    }
+
+    public void setTitle(String title) {
+        titleLabel.setText(title);
     }
 }

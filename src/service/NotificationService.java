@@ -1,6 +1,7 @@
 package service;
 
 import dao.NotificationDAO;
+import dao.ProductDAO;
 import model.Notification;
 import model.Product;
 
@@ -12,9 +13,11 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationDAO notificationDAO;
+    private final ProductDAO productDAO;
 
     public NotificationService() {
         this.notificationDAO = new NotificationDAO();
+        this.productDAO = new ProductDAO();
     }
 
     /**
@@ -37,13 +40,13 @@ public class NotificationService {
     }
 
     /**
-     * Vérifie tous les produits à faible stock et crée des notifications si
-     * nécessaire. Appelée régulièrement par l'admin.
+     * Vérifie tous les produits à faible stock et crée des notifications si nécessaire.
      */
     public void syncLowStockNotifications() {
-        // On pourrait parcourir tous les produits et appeler syncProductStockNotification.
-        // Pour l'instant, on se contente de renvoyer la liste existante.
-        // L'implémentation complète peut être ajoutée plus tard.
+        List<Product> products = productDAO.findAll();
+        for (Product p : products) {
+            syncProductStockNotification(p, 5);
+        }
     }
 
     public List<Notification> getUnreadNotifications() {
